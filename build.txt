@@ -1,0 +1,3 @@
+displayName = Ollama Player
+author = Silverellion
+version = 0.1
