@@ -23,8 +23,7 @@ public class OllamaApiRequester
             ? string.Join("\n", _chatHistory) + $"\n{playerName}: {prompt}" 
             : $"{playerName}: {prompt}";
 
-        string response = await ProcessResponseAsync(fullPrompt);
-    
+        string? response = await ProcessResponseAsync(fullPrompt);
         if (response != null)
         {
             _chatHistory ??= new List<string>();
@@ -46,6 +45,7 @@ public class OllamaApiRequester
             {
                 model = "gemma2",
                 prompt,
+                max_tokens = 32,
                 stream = false
             };
 

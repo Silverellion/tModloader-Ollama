@@ -4,12 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OllamaPlayer.Ollama;
 using Terraria;
-using Terraria.Chat;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Personalities;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
 
@@ -19,7 +17,7 @@ public class OllamaNpcMainProjectile : ModNPC
 {
 	private static string _chatText = "";
 	private static int _chatTimer;
-	private int _detectionTimer = 60 * 60;
+	private int _detectionTimer = 60 * 10;
 	
 	public override void SetStaticDefaults()
 	{
@@ -160,31 +158,26 @@ public class OllamaNpcMainProjectile : ModNPC
 				{
 					if (Collision.CanHitLine(NPC.position, NPC.width, NPC.height, enemy.position, enemy.width, enemy.height))
 					{
+						_detectionTimer = 60 * 60; 
 						Task.Run(async () =>
 						{
-							/*string alert = (
-							"You are an NPC in Terraria and you spot "
-							+ enemy.FullName
-							+ " approaching! You can either: \n"
-							+ "1. run away \n"
-							+ "2. fight it \n"
-							+ "you can only choose between 1 and 2"
-							);*/
-							_detectionTimer = 60 * 60; //60 ticks = 1 sec;
-							string enemyDetection = ("You are an NPC in Terraria and you see " + enemy.FullName +
-							                         ", what will you do? I suggest we fight!");
-							ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(enemyDetection), Color.Yellow);
-							string responseToDetection = await OllamaResponse.GetOllamaResponse(enemyDetection);
-							string motiveConfirmation = "Do you think this sentence\n"
-							                            + responseToDetection
-							                            + "implies the sender is\n"
-							                            + "1. running away\n"
-							                            + "2. fighting the threat\n"
-							                            + "respond in 1 or 2";
-							//Most of the time the bot decides to "1. running"
-							string answer = await OllamaResponse.GetOllamaResponse(motiveConfirmation);
-							//TODO: write a silent class so that the {string answer} won't be sent to the main chat 
-							ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(answer), Color.Yellow);
+							if(Main.netMode == NetmodeID.MultiplayerClient)
+							{
+								ModPacket enemyDetection = ModContent.GetInstance<OllamaPlayer>().GetPacket();
+								enemyDetection.Write((byte)OllamaPacketState.OllamaEnemyDetection);
+								enemyDetection.Write(enemy.FullName);
+								enemyDetection.Send();
+							}
+							else
+							{
+								string enemyDetection = StringUtility.GetEnemyDetectionMessage(enemy.FullName);
+								StringUtility.DebugMessage(enemyDetection);
+								string responseToDetection = await OllamaResponse.GetOllamaResponseSilent(enemyDetection);
+								string motiveConfirmation = StringUtility.GetMotiveConfirmationMessage(responseToDetection);
+								string answer = await OllamaResponse.GetOllamaResponseSilent(motiveConfirmation);
+								//TODO: write a silent class so that the {string answer} won't be sent to the main chat 
+								StringUtility.DebugMessage(answer);
+							}
 						});
 						break;
 					}

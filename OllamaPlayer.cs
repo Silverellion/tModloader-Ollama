@@ -12,8 +12,8 @@ namespace OllamaPlayer
     {
         OllamaSpawn,
         OllamaDespawn,
-        PlayerPrompt,    // Client -> Server: Player sends a message
-        OllamaResponse   // Server -> Client: Server replies with LLM response
+        PlayerPrompt,   // Client -> Server: Player sends a message
+        OllamaEnemyDetection,    // Server -> Clients: Notify about detected enemy
     }
 
     public class OllamaPlayer : Mod
@@ -44,33 +44,35 @@ namespace OllamaPlayer
                     }
                 }
             }
-            
+
             else if (packetState == OllamaPacketState.PlayerPrompt && Main.netMode == NetmodeID.Server)
             {
                 int playerId = reader.ReadInt32();
                 string prompt = reader.ReadString();
-                
+
                 Task.Run(async () =>
                 {
-                    prompt = await OllamaResponse.GetOllamaResponse(prompt, Main.player[playerId]);
+                    await HandlePlayerPrompt(playerId, prompt);
                 });
-
-                ModPacket responsePacket = ModContent.GetInstance<OllamaPlayer>().GetPacket();
-                responsePacket.Write((byte)OllamaPacketState.OllamaResponse);
-                responsePacket.Write(playerId);
-                responsePacket.Write(prompt); 
-                responsePacket.Send();
             }
 
-            else if (packetState == OllamaPacketState.OllamaResponse && Main.netMode == NetmodeID.MultiplayerClient)
+            else if (packetState == OllamaPacketState.OllamaEnemyDetection && Main.netMode == NetmodeID.Server)
             {
-                int playerId = reader.ReadInt32();
-                string prompt = reader.ReadString();
+                string enemyName = reader.ReadString();
+                string enemyDetection = StringUtility.GetEnemyDetectionMessage(enemyName);
                 Task.Run(async () =>
                 {
-                    await OllamaResponse.GetOllamaResponse(prompt, Main.player[playerId]);
+                    string responseToDetection = await HandlePromptSilent(enemyDetection);
+                    StringUtility.DebugMessage(enemyDetection);
+                    string motiveConfirmation =
+                        await HandlePromptSilent(StringUtility.GetMotiveConfirmationMessage(responseToDetection));
+                    string answer = await HandlePromptSilent(motiveConfirmation);
+                    StringUtility.DebugMessage(answer);
                 });
             }
         }
+
+        private static async Task<string> HandlePlayerPrompt(int playerId, string prompt) => await OllamaResponse.GetOllamaResponse(prompt, Main.player[playerId]);
+        private static async Task<string> HandlePromptSilent(string prompt) => await OllamaResponse.GetOllamaResponseSilent(prompt);
     }
 }

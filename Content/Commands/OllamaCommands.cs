@@ -72,6 +72,7 @@ public static class ProcessTalkCommand
                 {
                         ModPacket packet = ModContent.GetInstance<OllamaPlayer>().GetPacket();
                         packet.Write((byte)OllamaPacketState.PlayerPrompt);
+                        
                         packet.Write(caller.Player.whoAmI);
                         packet.Write(prompt);
                         packet.Send();

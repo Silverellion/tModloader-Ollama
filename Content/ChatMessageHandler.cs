@@ -1,9 +1,6 @@
-﻿
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Chat;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace OllamaPlayer.Content;
@@ -29,7 +26,7 @@ public class ChatMessageHandler : ModSystem
             }
             else if (Main.netMode == NetmodeID.Server)
             {
-                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(_message), Color.Yellow);
+                StringUtility.DebugMessage(_message);
             }
         }
     }

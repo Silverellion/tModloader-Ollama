@@ -3,15 +3,18 @@ using System.Threading.Tasks;
 using OllamaPlayer.Content.Npc.OllamaNpc;
 using Terraria;
 namespace OllamaPlayer.Ollama;
+
 public static class OllamaResponse
 {
 #nullable enable
-    public static async Task<string> GetOllamaResponse(string prompt) 
+    public static async Task<string> GetOllamaResponse(string prompt)
         => await ProcessOllamaResponse(prompt);
 
-    public static async Task<string> GetOllamaResponse(string prompt, Player player) 
+    public static async Task<string> GetOllamaResponse(string prompt, Player player)
         => await ProcessOllamaResponse(prompt, player);
-    
+    public static async Task<string> GetOllamaResponseSilent(string prompt) 
+        => await OllamaApiRequester.GenerateResponseAsync(prompt) ?? "No response.";
+
     private static async Task<string> ProcessOllamaResponse(string prompt, Player? player = null)
     {
         string? rawResponse = await (player != null
@@ -23,7 +26,7 @@ public static class OllamaResponse
 
         List<string> response = StringUtility.Initiate(rawResponse);
         string fullResponse = string.Join(" ", response);
-        
+
         if (player != null)
             OllamaNpcHandler.Initiate(player, rawResponse);
         else

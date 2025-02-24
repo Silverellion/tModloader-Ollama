@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using OllamaPlayer.Ollama;
 using Terraria;
-using Terraria.Chat;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace OllamaPlayer.Content.Npc.OllamaNpc;
@@ -40,7 +37,7 @@ public static class OllamaNpcHandler
             foreach (string responseLine in response)
             {
                 OllamaNpcMainProjectile.SetChat(responseLine);
-                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(responseLine), Color.White);
+                StringUtility.ChatMessage(responseLine);
                 await Task.Delay(800);
             }
         });
