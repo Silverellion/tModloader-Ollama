@@ -45,7 +45,6 @@ public class OllamaApiRequester
             {
                 model = "gemma2",
                 prompt,
-                max_tokens = 32,
                 stream = false
             };
 

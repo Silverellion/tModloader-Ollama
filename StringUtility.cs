@@ -36,14 +36,14 @@ public static class StringUtility
         ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(debugMessage), Color.White);
     }
 
-    public static string GetEnemyDetectionMessage(string enemyName) => "You are an NPC in Terraria and you see " 
-                                                                       + enemyName 
-                                                                       + ", what will you do? I suggest we fight!";
-    
+    public static string GetEnemyDetectionMessage(string enemyName) => "You are an NPC in Terraria and you see "
+                                                                       + enemyName
+                                                                       + ", what will you do? I suggest we fight!\n"
+                                                                       + "Write a short response under 50 words";
     public static string GetMotiveConfirmationMessage(string responseToDetection) => "Do you think this sentence\n"
                                                                                      + responseToDetection
                                                                                      + "implies the sender is\n"
-                                                                                     + "1. running away\n"
+                                                                                     + "1. avoiding the threat\n"
                                                                                      + "2. fighting the threat\n"
                                                                                      + "respond in 1 or 2";
 }

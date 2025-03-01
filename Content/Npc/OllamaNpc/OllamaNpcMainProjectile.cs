@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OllamaPlayer.Ollama;
+using OllamaPlayer.Others;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -15,6 +14,7 @@ namespace OllamaPlayer.Content.Npc.OllamaNpc;
 
 public class OllamaNpcMainProjectile : ModNPC
 {
+	private readonly OllamaNpcActionsAi _ollamaNpcActionsAi = new OllamaNpcActionsAi();
 	private static string _chatText = "";
 	private static int _chatTimer;
 	private int _detectionTimer = 60 * 10;
@@ -84,6 +84,9 @@ public class OllamaNpcMainProjectile : ModNPC
 
 		HandleOrb();
 		DetectEnemy();
+		Debug.PrintOllamaAiState();
+		if(OllamaNpcGlobalValues.AiState == OllamaAiState.Fight)
+			_ollamaNpcActionsAi.FightStrongestEnemy(NPC);
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -154,13 +157,11 @@ public class OllamaNpcMainProjectile : ModNPC
 			if (enemy.active && !enemy.friendly && enemy.CanBeChasedBy())
 			{
 				float distance = Vector2.Distance(NPC.Center, enemy.Center);
-				if (distance <= 600f)
+				if (distance <= OllamaNpcGlobalValues.OllamaNpcSight)
 				{
 					if (Collision.CanHitLine(NPC.position, NPC.width, NPC.height, enemy.position, enemy.width, enemy.height))
 					{
-						_detectionTimer = 60 * 60; 
-						Task.Run(async () =>
-						{
+						_detectionTimer = 60 * 120; 
 							if(Main.netMode == NetmodeID.MultiplayerClient)
 							{
 								ModPacket enemyDetection = ModContent.GetInstance<OllamaPlayer>().GetPacket();
@@ -168,17 +169,8 @@ public class OllamaNpcMainProjectile : ModNPC
 								enemyDetection.Write(enemy.FullName);
 								enemyDetection.Send();
 							}
-							else
-							{
-								string enemyDetection = StringUtility.GetEnemyDetectionMessage(enemy.FullName);
-								StringUtility.DebugMessage(enemyDetection);
-								string responseToDetection = await OllamaResponse.GetOllamaResponseSilent(enemyDetection);
-								string motiveConfirmation = StringUtility.GetMotiveConfirmationMessage(responseToDetection);
-								string answer = await OllamaResponse.GetOllamaResponseSilent(motiveConfirmation);
-								//TODO: write a silent class so that the {string answer} won't be sent to the main chat 
-								StringUtility.DebugMessage(answer);
-							}
-						});
+							else if (Main.netMode == NetmodeID.SinglePlayer)
+								OllamaNpcActions.DetectEnemy(enemy.FullName);
 						break;
 					}
 				}

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OllamaPlayer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fddf0ccf91c33b55b84d8cdb7c833f9b5a350015")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4ff5e264054d94803238f38cf2254c108ef0edbd")]
 [assembly: System.Reflection.AssemblyProductAttribute("OllamaPlayer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OllamaPlayer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

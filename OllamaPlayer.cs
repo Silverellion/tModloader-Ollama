@@ -12,8 +12,8 @@ namespace OllamaPlayer
     {
         OllamaSpawn,
         OllamaDespawn,
-        PlayerPrompt,   // Client -> Server: Player sends a message
-        OllamaEnemyDetection,    // Server -> Clients: Notify about detected enemy
+        PlayerPrompt,
+        OllamaEnemyDetection,
     }
 
     public class OllamaPlayer : Mod
@@ -59,20 +59,10 @@ namespace OllamaPlayer
             else if (packetState == OllamaPacketState.OllamaEnemyDetection && Main.netMode == NetmodeID.Server)
             {
                 string enemyName = reader.ReadString();
-                string enemyDetection = StringUtility.GetEnemyDetectionMessage(enemyName);
-                Task.Run(async () =>
-                {
-                    string responseToDetection = await HandlePromptSilent(enemyDetection);
-                    StringUtility.DebugMessage(enemyDetection);
-                    string motiveConfirmation =
-                        await HandlePromptSilent(StringUtility.GetMotiveConfirmationMessage(responseToDetection));
-                    string answer = await HandlePromptSilent(motiveConfirmation);
-                    StringUtility.DebugMessage(answer);
-                });
+                OllamaNpcActions.DetectEnemy(enemyName);
             }
         }
 
         private static async Task<string> HandlePlayerPrompt(int playerId, string prompt) => await OllamaResponse.GetOllamaResponse(prompt, Main.player[playerId]);
-        private static async Task<string> HandlePromptSilent(string prompt) => await OllamaResponse.GetOllamaResponseSilent(prompt);
     }
 }
