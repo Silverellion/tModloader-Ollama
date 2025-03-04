@@ -84,7 +84,7 @@ public class OllamaNpcMainProjectile : ModNPC
 
 		HandleOrb();
 		DetectEnemy();
-		Debug.PrintOllamaAiState();
+		// Debug.PrintOllamaAiState();
 		if(OllamaNpcGlobalValues.AiState == OllamaAiState.Fight)
 			_ollamaNpcActionsAi.FightStrongestEnemy(NPC);
 	}

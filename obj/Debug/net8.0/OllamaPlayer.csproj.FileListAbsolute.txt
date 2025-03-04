@@ -227,3 +227,4 @@ C:\Users\Impasta\Documents\My Games\Terraria\tModLoader\ModSources\OllamaPlayer\
 C:\Users\Impasta\Documents\My Games\Terraria\tModLoader\ModSources\OllamaPlayer\obj\Debug\net8.0\refint\OllamaPlayer.dll
 C:\Users\Impasta\Documents\My Games\Terraria\tModLoader\ModSources\OllamaPlayer\obj\Debug\net8.0\OllamaPlayer.pdb
 C:\Users\Impasta\Documents\My Games\Terraria\tModLoader\ModSources\OllamaPlayer\obj\Debug\net8.0\ref\OllamaPlayer.dll
+C:\Users\Impasta\Documents\My Games\Terraria\tModLoader\ModSources\OllamaPlayer\obj\Debug\net8.0\OllamaPlayer.sourcelink.json

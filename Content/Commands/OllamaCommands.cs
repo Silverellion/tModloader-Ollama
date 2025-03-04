@@ -57,7 +57,6 @@ public class KillOllamaNpcCommand : ModCommand
                                         packet.Write(npc.whoAmI);
                                         packet.Send();
                                 }
-                                
                         }
                 }
         }
@@ -83,6 +82,6 @@ public static class ProcessTalkCommand
                         {
                                 await OllamaResponse.GetOllamaResponse(prompt, caller.Player);
                         });
-                }
+                }       
         }
 }

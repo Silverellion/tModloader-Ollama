@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
+using OllamaPlayer.Others;
+using Terraria;
 using Terraria.Chat;
+using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace OllamaPlayer;
 
@@ -34,6 +38,17 @@ public static class StringUtility
     {
         string debugMessage = "<Ollama> " + message;
         ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(debugMessage), Color.White);
+        if (Main.netMode == NetmodeID.MultiplayerClient)
+        {
+            ModPacket microsoftTts = ModContent.GetInstance<OllamaPlayer>().GetPacket();
+            microsoftTts.Write((byte)OllamaPacketState.MicrosoftTts);
+            microsoftTts.Write(message);
+            microsoftTts.Send();
+        }
+        else
+        {
+            Tts.Speak(message);
+        }
     }
 
     public static string GetEnemyDetectionMessage(string enemyName) => "You are an NPC in Terraria and you see "
