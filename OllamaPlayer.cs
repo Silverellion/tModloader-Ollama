@@ -2,7 +2,6 @@ using System.IO;
 using System.Threading.Tasks;
 using OllamaPlayer.Content.Npc.OllamaNpc;
 using OllamaPlayer.Ollama;
-using OllamaPlayer.Others;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,7 +14,6 @@ namespace OllamaPlayer
         OllamaDespawn,
         PlayerPrompt,
         OllamaEnemyDetection,
-        MicrosoftTts,
     }
 
     public class OllamaPlayer : Mod
@@ -62,12 +60,6 @@ namespace OllamaPlayer
             {
                 string enemyName = reader.ReadString();
                 OllamaNpcActions.DetectEnemy(enemyName);
-            }
-            
-            else if (packetState == OllamaPacketState.MicrosoftTts && Main.netMode == NetmodeID.Server)
-            {
-                string input = reader.ReadString();
-                Tts.Speak(input);
             }
         }
 

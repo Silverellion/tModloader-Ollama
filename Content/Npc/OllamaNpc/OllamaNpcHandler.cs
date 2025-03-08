@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using OllamaPlayer.Sounds;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -31,6 +32,7 @@ public static class OllamaNpcHandler
     {
         if (npcIndex < 0 || npcIndex >= Main.npc.Length || !Main.npc[npcIndex].active)
             return;
+        
         List<string> response = StringUtility.Initiate(rawResponse);
         Task.Run(async () =>
         {
@@ -38,7 +40,7 @@ public static class OllamaNpcHandler
             {
                 OllamaNpcMainProjectile.SetChat(responseLine);
                 StringUtility.ChatMessage(responseLine);
-                await Task.Delay(800);
+                await PiperTts.TtsHandler(responseLine);
             }
         });
     }
@@ -57,7 +59,6 @@ public static class OllamaNpcHandler
         Vector2 spawnPos = player.Center + new Vector2(20, 0);
         int npcIndex = NPC.NewNPC(null, (int)spawnPos.X, (int)spawnPos.Y, ModContent.NPCType<OllamaNpcMainProjectile>());
 
-        // Sync NPC with all clients
         if (npcIndex != -1 && Main.netMode == NetmodeID.Server)
             NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npcIndex);
     }

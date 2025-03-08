@@ -66,7 +66,7 @@ public static class ProcessTalkCommand
 {
         public static void Initiate(CommandCaller caller, string[] args)
         {
-                string prompt = string.Join(" ", args);
+                string prompt = string.Join(" ", args) + " Respond in under 50 words";
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                         ModPacket packet = ModContent.GetInstance<OllamaPlayer>().GetPacket();

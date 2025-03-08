@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using OllamaPlayer.Ollama;
+using OllamaPlayer.Sounds;
 
 namespace OllamaPlayer.Content.Npc.OllamaNpc;
 
@@ -11,11 +12,10 @@ public class OllamaNpcActions
         Task.Run(async () =>
         {
             string responseToDetection = await HandlePromptSilent(enemyDetection);
-            StringUtility.DebugMessage(enemyDetection);
             string motiveConfirmation = await HandlePromptSilent(StringUtility.GetMotiveConfirmationMessage(responseToDetection));
             
             StringUtility.ChatMessage(responseToDetection);
-            StringUtility.DebugMessage(motiveConfirmation);
+            await PiperTts.TtsHandler(responseToDetection);
             
             if (motiveConfirmation.Contains("1") || motiveConfirmation.ToLower().Contains("flee"))
                 OllamaNpcGlobalValues.AiState = OllamaAiState.Flee;
